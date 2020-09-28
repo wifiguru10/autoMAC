@@ -5,17 +5,14 @@ Meraki autoMAC - allows you to automatically configure the switch ports on a MS 
 
 
 # Steps
-1. place config files in local directory (raw output from 'show run' on the ASA)
-2. Create a new MX network in the Meraki Dashboard
-3. Enable "Use VLANs" under "Addressing & Vlans" (it'll error out if you don't do this!)
-4. Create interfaces (vlan, ip and subnet) in that new network (these should match interfaces VLAN-ID in the config file)
-5. For step#4, the IP/subnets do not have to match, just the VLAN-ID. The script will auto-map the new IP/subnet to the ruleset
-6. Edit "acl_list.txt" this file should contain the names of every ACL rule you want to process
-7. RUN THIS ON A TEST NETWORK FIRST! This re-writes ALL the rules and anything currently in the rules will be lost.
-8. Run the commandline "python3 mx_import.py -k \<key\> -o \<org\> -n \<networkID\> -c command \<ASA CONFIG FILE\>"
-  -commands supported "write", "clear" and "test". Test is default. Clear will wipe the FW rules.
-9. After the script runs, validate the rules have ported correctly. The comments section will hold the original ACL rule to compare
-
+1. place config files in local directory 'cisco/' (raw output from 'show run' and 'show mac address-table' in a "<IP> <NAME>.log" file format)
+2. Configure the ORG_ID in 'autoMAC.py' to match the org your configuring
+3. TAG your switch Network with "autoMAC" tag
+4. TAG your switches in the Network with "autoMAC" (not tagging them will exclude them)
+5. TAG your switch ports with "AM:on" to allow switch port configuration (requires them to be an access port, not TRUNK!)
+6. (optional) TAG your switch ports with "AM:auto" as well as "AM:on" to have it perpetually configure port on change, otherwise it'll be one-time config
+7. If you have your network, switches and ports tagged, run the script!
+  
 # Requirements
 1. python 3.x
 2. meraki SDK v1 or later for python (https://developer.cisco.com/meraki/api/#/python/getting-started)
