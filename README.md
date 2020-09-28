@@ -1,13 +1,13 @@
 # Meraki autoMAC
 Meraki autoMAC - allows you to automatically configure the switch ports on a MS network based on historical cisco switch config(show run and show mac address-table) or device profiles (OUI/CDP/LLDP/MAC/Vendor). Think of it like API based Secure-Connect. Works on any switch type.
 
-![autoMAC Output](images/autoMAC.png)
-
 # Different Modes
 1. "History" mode, where it uses "show run" and "show mac address-table" output to identify new clients and port configurations
 2. "Profile" mode, where it uses Mac address, OUI, Vendor, Manufacturer, CDP/LLDP info to assign a default profile
 3. "Hybrid" mode, both of the above enabled. Configures all known devices, and uses profiles to configure anything new 
 
+
+![autoMAC Profile Mode](images/autoMAC.png)
 
 # Steps
 1. place config files in local directory 'cisco/' (raw output from 'show run' and 'show mac address-table' in a "<IP> <NAME>.log" file format)
