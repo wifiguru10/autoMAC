@@ -11,7 +11,10 @@ Meraki autoMAC - allows you to automatically configure the switch ports on a MS 
 4. TAG your switches in the Network with "autoMAC" (not tagging them will exclude them)
 5. TAG your switch ports with "AM:on" to allow switch port configuration (requires them to be an access port, not TRUNK!)
 6. (optional) TAG your switch ports with "AM:auto" as well as "AM:on" to have it perpetually configure port on change, otherwise it'll be one-time config
-7. If you have your network, switches and ports tagged, run the script!
+7. (optional) to disable Auto-Profiles, set "allowProfileConfigs" to 'False' in autoMAC.py
+8. (optional) to disable Auto-History, set "allowHistoryConfigs" to 'False' in autoMAC.py
+9. (optional) For CUSTOM profiles, edit portConfig.py and create new profiles in the init() section, examples provided
+10. If you have your network, switches and ports tagged, run the script!
   
 # Requirements
 1. python 3.x
@@ -20,5 +23,6 @@ Meraki autoMAC - allows you to automatically configure the switch ports on a MS 
 
 # Known caveats:
 -test it first
+-Try not to do CDP only profiles, there's some issues where devices that don't do CDP/LLDP might show CDP info of another device in the stack
 
 
