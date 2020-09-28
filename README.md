@@ -21,5 +21,4 @@ Meraki autoMAC - allows you to automatically configure the switch ports on a MS 
 # Known caveats:
 -test it first
 
-# Example Output
-![output](images/output.png)
+
