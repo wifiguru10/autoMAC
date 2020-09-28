@@ -36,6 +36,8 @@ tag_port_DONE = "AM:complete"
 
 ### USER CONFIGURABLE SETTINGS
 
+org_id = '5723437235866696' #this is the org you want to monitor/configure
+
 allowHistoryConfigs = True #this allows it to use historic configs/mac-addresstables
 allowProfileConfigs = True #this allows it to "guess" on the profile based on MAC/OUI/CDP/LLDP/Vendor
 WRITE  = True #set this to False to test and populate debug log files
@@ -128,7 +130,6 @@ def validSN(SN, devices):
 # the function goes through each switch and assigns priming VLAN and preps it for provisioning
 def switch_wipe():
     dashboard = meraki.DashboardAPI(api_key=None, base_url='https://api.meraki.com/api/v1/', print_console=False)
-    org_id = '577586652210266696'
     networks = dashboard.organizations.getOrganizationNetworks(org_id)
 
     networks_inscope = []  # target networks
@@ -136,11 +137,13 @@ def switch_wipe():
         if n['tags'] is not None and 'autoMAC' in n['tags']:
             networks_inscope.append(n)
 
+
     switches_inscope = []
     devices_inscope = []
     for n in networks_inscope:
         #devices = dashboarad.devices.getNetworkDevices(n['id'])
         devices = dashboard.networks.getNetworkDevices(n['id'])
+        
         for d in devices:
             if 'tags' in d and tag_switch_TARGET in d['tags']:
                 devices_inscope.append(d)
@@ -208,7 +211,7 @@ def main():
     #client_load(clientDB)  #this loads meraki "snapshot", doesn't include voice vlans, need to fix that
 
     msDB = []
-    sDir = "cisco/"
+    sDir = "cisco/paris_raw2/"
     if allowHistoryConfigs:
         cisco_load(msDB, clientDB, sDir)
 
@@ -224,7 +227,6 @@ def main():
     # Fire up Meraki API and build DB's
     dashboard = meraki.DashboardAPI(api_key=None, base_url='https://api.meraki.com/api/v1/', log_file_prefix=__file__[:-3], print_console=False)
     loop = True
-    org_id = '577586652210266696'
 
     #load Port Config detault library
     PC = portConfig()
@@ -243,6 +245,13 @@ def main():
         for n in networks:
             if n['tags'] is not None and 'autoMAC' in n['tags']:
                 networks_inscope.append(n)
+        
+        online_devices = []
+        stats = dashboard.organizations.getOrganizationDevicesStatuses(org_id)
+        for s in stats:
+            if s['status'] == 'online' or s['status'] == 'alerting':
+                online_devices.append(s['serial'])
+
 
         switches_inscope = []
         devices_inscope = []
@@ -254,8 +263,9 @@ def main():
             for d in devices:
                 if 'tags' in d and tag_switch_TARGET in d['tags']:
                     #dashboard.devices.blinkNetworkDeviceLeds(n['id'], serial=d['serial'], duration=5, duty=10, period=100 )
-                    dashboard.devices.blinkDeviceLeds(serial=d['serial'], duration=5, duty=10, period=100 )
-                    devices_inscope.append(d)
+                    if d['serial'] in online_devices:
+                        dashboard.devices.blinkDeviceLeds(serial=d['serial'], duration=5, duty=10, period=100 )
+                        devices_inscope.append(d)
 
         print(f'{bcolors.OKBLUE}Networks Inscope:')
         for n in networks_inscope:
@@ -309,14 +319,36 @@ def main():
         #        print()
 
         port_changes = []
-
+        total_clients = 0
         # new network device function, works at network level instead of querying each switch
         for n in networks_inscope:
             netid = n['id']
             #clients = dashboard.clients.getNetworkClients(netid, perPage=1000)
             clients = dashboard.networks.getNetworkClients(netid, perPage=1000)
-    
+            lastId = ""
+            if len(clients) == 1000:
+                lastId = clients[999]['id']
+                clients = clients + dashboard.networks.getNetworkClients(netid, perPage=1000, startingAfter=lastId)
+            lastId = clients[len(clients)-1]['id']
+            newclients = dashboard.networks.getNetworkClients(netid, perPage=1000, startingAfter=lastId)
+            while len(newclients) >= 1:
+                #print(f'Clients {len(clients)}')
+                #print(f'NewClients {len(newclients)}')
+                #print(lastId)
+                clients = clients + newclients
+                lastId = newclients[len(newclients)-1]['id']
+                newclients = dashboard.networks.getNetworkClients(netid, perPage=1000, startingAfter=lastId)
+                if len(newclients) <= 1:
+                    break
+            
+ 
+            print(f'{bcolors.OKBLUE}Detected total {bcolors.WARNING}{len(clients)}{bcolors.OKBLUE} in Network[{bcolors.WARNING}{n["name"]}{bcolors.OKBLUE}]')
+            total_clients = total_clients + len(clients)
+            print(f'{bcolors.OKBLUE}TOTAL Clients Detected: {bcolors.WARNING}{len(clients)}{bcolors.OKBLUE} in {bcolors.WARNING}ALL{bcolors.OKBLUE} networks')
+
             for c in clients: #interate through the ACTIVE clients on dashboard (target switches)
+                if c['status'] == "Offline":
+                    continue
                 update = False
                 serial = ""
                 serial = c['recentDeviceSerial']
@@ -332,11 +364,13 @@ def main():
                         vlan = int(sourceClient['vlan'])
                         update = True
                         ovlan = int(c['vlan'])
-                        print(f'{bcolors.FAIL}VLAN Misconfiguration Client activeVlan[{bcolors.WARNING}{ovlan}{bcolors.FAIL}] OriginalVlan[{bcolors.WARNING}{vlan}{bcolors.FAIL}]')
-                        #print(c)
+                        #print(f'{bcolors.OKGREEN}{c}{bcolors.ENDC}')
 
                     
                     if isActivePort(serial, port, ports_inscope):
+                        
+                        print(f'{bcolors.FAIL}VLAN Misconfiguration Client activeVlan[{bcolors.WARNING}{ovlan}{bcolors.FAIL}] OriginalVlan[{bcolors.WARNING}{vlan}{bcolors.FAIL}] Mac[{bcolors.WARNING}{c["mac"]}{bcolors.FAIL}] Manufacturer[{bcolors.WARNING}{c["manufacturer"]}{bcolors.FAIL}] Desc[{bcolors.WARNING}{c["description"]}{bcolors.FAIL}]')
+ 
                         # if there's a change, make an update
                         if update and c['status'] == "Online": #Changes is to be made and port is up
                             #print(c)
@@ -421,7 +455,12 @@ def main():
             orig_mac = findMAC(msDB,mac)
             orig_sw = getSW(msDB,orig_mac['name'])
             orig_port = orig_sw.parsedCFG(orig_mac['port'])
-            oVlan = orig_port['vlan']
+            oVlan = vlan
+            try:
+                oVlan = orig_port['vlan']
+            except:
+                print(f'Failure on port: {orig_port} NewPort[{newPort}]')
+
             if 'voiceVlan' in orig_port:
                 ovoiceVlan = orig_port['voiceVlan']
             else:
@@ -454,7 +493,15 @@ def main():
 
 
             else:
-                print(f'{bcolors.FAIL}Port is already configured{bcolors.WARNING}!!!!!{bcolors.OKBLUE}')
+                print(f'{bcolors.FAIL}Port is already configured{bcolors.WARNING}!!!!! Clearing port tag{bcolors.OKBLUE}')
+                if WRITE:
+                    res = dashboard.switch.updateDeviceSwitchPort(S1, P1, tags=tags)
+                    log(f'[WRITE] API updateDeviceSwitchPorts')
+                else:
+                    print(f'{bcolors.OKGREEN}[READ-ONLY BYPASS]')
+                    log(f'[READ-ONLY] API updateDeviceSwitchPorts')
+
+
             print()
 
         print()

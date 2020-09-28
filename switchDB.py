@@ -38,6 +38,12 @@ class MS_switch:
 
             #            print(f'{vlan} {mac} {port}')
 
+            #print(f'ISTRUNK[{port}]')
+            #print(self.isTrunk(port))
+            if port == "Gi1/0/48":
+                continue
+            if self.isTrunk(port):
+                continue
             if not mac in self.macs:
                 self.macs.append(mac)
             if not vlan in self.vlans:
@@ -53,7 +59,11 @@ class MS_switch:
 
     # this function takes file target and loads it into the parse field
     def parseFile(self, target):
-        self.name = target.split(' ')[1].split('.')[0]
+        try:
+            self.name = target.split(' ')[1].split('.')[0]
+        except:
+            self.name = target.split('.')[0]
+        print("PARSED")
         self.parse = CiscoConfParse(target)
         parse_interfaces = self.parse.find_objects('^interface ')
         self.length = str(len(parse_interfaces))
