@@ -1,0 +1,63 @@
+AutoMAC_test1#show mac address-table
+          Mac Address Table
+-------------------------------------------
+
+Vlan    Mac Address       Type        Ports
+----    -----------       --------    -----
+ All    0100.0ccc.cccc    STATIC      CPU
+ All    0100.0ccc.cccd    STATIC      CPU
+ All    0180.c200.0000    STATIC      CPU
+ All    0180.c200.0001    STATIC      CPU
+ All    0180.c200.0002    STATIC      CPU
+ All    0180.c200.0003    STATIC      CPU
+ All    0180.c200.0004    STATIC      CPU
+ All    0180.c200.0005    STATIC      CPU
+ All    0180.c200.0006    STATIC      CPU
+ All    0180.c200.0007    STATIC      CPU
+ All    0180.c200.0008    STATIC      CPU
+ All    0180.c200.0009    STATIC      CPU
+ All    0180.c200.000a    STATIC      CPU
+ All    0180.c200.000b    STATIC      CPU
+ All    0180.c200.000c    STATIC      CPU
+ All    0180.c200.000d    STATIC      CPU
+ All    0180.c200.000e    STATIC      CPU
+ All    0180.c200.000f    STATIC      CPU
+ All    0180.c200.0010    STATIC      CPU
+ All    0180.c200.0021    STATIC      CPU
+ All    ffff.ffff.ffff    STATIC      CPU
+   1    ac17.c8f7.c0c0    DYNAMIC     Gi2/0/24
+   2    001e.0630.bf1b    DYNAMIC     Gi2/0/2
+   2    001e.0630.c42c    DYNAMIC     Gi2/0/1
+   2    ac17.c8c1.2725    DYNAMIC     Gi2/0/24
+   3    001e.0630.bedb    DYNAMIC     Gi2/0/4
+   3    001e.0630.bf31    DYNAMIC     Gi2/0/3
+   3    ac17.c8c1.2725    DYNAMIC     Gi2/0/24
+   4    001e.0630.bea1    DYNAMIC     Gi2/0/6
+   4    001e.0630.bef9    DYNAMIC     Gi2/0/5
+   4    ac17.c8c1.2725    DYNAMIC     Gi2/0/24
+   5    001e.0630.bece    DYNAMIC     Gi2/0/7
+   5    001e.0630.bf0c    DYNAMIC     Gi2/0/8
+   5    001e.0630.cd57    DYNAMIC     Gi2/0/24
+   5    ac17.c8c1.2725    DYNAMIC     Gi2/0/24
+   6    001e.0630.be99    DYNAMIC     Gi2/0/9
+   6    001e.0630.bf2b    DYNAMIC     Gi2/0/10
+   6    ac17.c8c1.2725    DYNAMIC     Gi2/0/24
+   7    001e.0630.c591    DYNAMIC     Gi2/0/11
+   7    001e.0630.c946    DYNAMIC     Gi2/0/12
+   7    ac17.c8c1.2725    DYNAMIC     Gi2/0/24
+   8    001e.0630.c396    DYNAMIC     Gi2/0/13
+   8    001e.0630.c474    DYNAMIC     Gi2/0/14
+   8    ac17.c8c1.2725    DYNAMIC     Gi2/0/24
+   9    001e.0630.c64e    DYNAMIC     Gi2/0/15
+   9    001e.0630.cd5a    DYNAMIC     Gi2/0/16
+   9    ac17.c8c1.2725    DYNAMIC     Gi2/0/24
+   9    ac17.c8f7.8b00    DYNAMIC     Gi2/0/24
+  10    001e.0630.cd73    DYNAMIC     Gi2/0/17
+  10    001e.0630.cda7    DYNAMIC     Gi2/0/18
+  10    ac17.c8c1.2725    DYNAMIC     Gi2/0/24
+  11    001e.0630.cd2a    DYNAMIC     Gi2/0/20
+  11    001e.0630.cd57    DYNAMIC     Gi2/0/19
+  11    ac17.c8c1.2725    DYNAMIC     Gi2/0/24
+Total Mac Addresses for this criterion: 54
+AutoMAC_test1#
+

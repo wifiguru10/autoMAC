@@ -1,0 +1,314 @@
+utoMAC_test1#show run
+Building configuration...
+
+Current configuration : 5506 bytes
+!
+! Last configuration change at 21:17:59 UTC Sun Jan 26 2020
+!
+version 16.6
+no service pad
+service timestamps debug datetime msec
+service timestamps log datetime msec
+no platform punt-keepalive disable-kernel-core
+!
+hostname AutoMAC_test1
+!
+!
+vrf definition Mgmt-vrf
+ !
+ address-family ipv4
+ exit-address-family
+ !
+ address-family ipv6
+ exit-address-family
+!
+!
+
+AutoMAC_test1#show run b
+Building configuration...
+
+Current configuration : 5506 bytes
+!
+! Last configuration change at 21:17:59 UTC Sun Jan 26 2020
+!
+version 16.6
+no service pad
+service timestamps debug datetime msec
+service timestamps log datetime msec
+no platform punt-keepalive disable-kernel-core
+!
+hostname AutoMAC_test1
+!
+!
+vrf definition Mgmt-vrf
+ !
+ address-family ipv4
+ exit-address-family
+ !
+ address-family ipv6
+ exit-address-family
+!
+!
+no aaa new-model
+switch 2 provision ws-c3850-24p
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+diagnostic bootup level minimal
+spanning-tree mode rapid-pvst
+spanning-tree extend system-id
+!
+!
+redundancy
+ mode sso
+!
+!
+!
+class-map match-any system-cpp-police-topology-control
+  description Topology control
+class-map match-any system-cpp-police-sw-forward
+  description Sw forwarding, L2 LVX data, LOGGING
+class-map match-any system-cpp-default
+  description DHCP Snooping, EWLC control, EWCL data
+class-map match-any system-cpp-police-sys-data
+  description Learning cache ovfl, Crypto Control, Exception, EGR Exception, NFL SAMPLED DATA, Gold Pkt, RPF Failed
+class-map match-any system-cpp-police-punt-webauth
+  description Punt Webauth
+class-map match-any system-cpp-police-l2lvx-control
+  description L2 LVX control packets
+class-map match-any system-cpp-police-forus
+  description Forus Address resolution and Forus traffic
+class-map match-any system-cpp-police-multicast-end-station
+  description MCAST END STATION
+class-map match-any system-cpp-police-multicast
+  description Transit Traffic and MCAST Data
+class-map match-any system-cpp-police-l2-control
+  description L2 control
+class-map match-any system-cpp-police-dot1x-auth
+  description DOT1X Auth
+class-map match-any system-cpp-police-data
+  description ICMP redirect, ICMP_GEN and BROADCAST
+class-map match-any system-cpp-police-stackwise-virt-control
+  description Stackwise Virtual
+class-map match-any non-client-nrt-class
+class-map match-any system-cpp-police-routing-control
+  description Routing control
+class-map match-any system-cpp-police-protocol-snooping
+  description Protocol snooping
+class-map match-any system-cpp-police-system-critical
+  description System Critical
+!
+policy-map system-cpp-policy
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+interface GigabitEthernet0/0
+ vrf forwarding Mgmt-vrf
+ no ip address
+ shutdown
+ speed 1000
+ negotiation auto
+!
+interface GigabitEthernet2/0/1
+ switchport access vlan 2
+ switchport mode access
+ spanning-tree portfast
+!
+interface GigabitEthernet2/0/2
+ switchport access vlan 2
+ switchport mode access
+ spanning-tree portfast
+!
+interface GigabitEthernet2/0/3
+ switchport access vlan 3
+ switchport mode access
+ spanning-tree portfast
+!
+interface GigabitEthernet2/0/4
+ switchport access vlan 3
+ switchport mode access
+ spanning-tree portfast
+!
+interface GigabitEthernet2/0/5
+ switchport access vlan 4
+ switchport mode access
+ spanning-tree portfast
+!
+interface GigabitEthernet2/0/6
+ switchport access vlan 4
+ switchport mode access
+ spanning-tree portfast
+!
+interface GigabitEthernet2/0/7
+ switchport access vlan 5
+ switchport mode access
+ spanning-tree portfast
+!
+interface GigabitEthernet2/0/8
+ switchport access vlan 5
+ switchport mode access
+ spanning-tree portfast
+!
+interface GigabitEthernet2/0/9
+ switchport access vlan 6
+ switchport mode access
+ spanning-tree portfast
+!
+interface GigabitEthernet2/0/10
+ switchport access vlan 6
+ switchport mode access
+ spanning-tree portfast
+!
+interface GigabitEthernet2/0/11
+ switchport access vlan 7
+ switchport mode access
+ spanning-tree portfast
+!
+interface GigabitEthernet2/0/12
+ switchport access vlan 7
+ switchport mode access
+ spanning-tree portfast
+!
+interface GigabitEthernet2/0/13
+ switchport access vlan 8
+ switchport mode access
+ spanning-tree portfast
+!
+interface GigabitEthernet2/0/14
+ switchport access vlan 8
+ switchport mode access
+ spanning-tree portfast
+!
+interface GigabitEthernet2/0/15
+ switchport access vlan 9
+ switchport mode access
+ spanning-tree portfast
+!
+interface GigabitEthernet2/0/16
+ switchport access vlan 9
+ switchport mode access
+ spanning-tree portfast
+!
+interface GigabitEthernet2/0/17
+ switchport access vlan 10
+ switchport mode access
+ spanning-tree portfast
+!
+interface GigabitEthernet2/0/18
+ switchport access vlan 10
+ switchport mode access
+ spanning-tree portfast
+!
+interface GigabitEthernet2/0/19
+ switchport access vlan 11
+ switchport mode access
+ spanning-tree portfast
+!
+interface GigabitEthernet2/0/20
+ switchport access vlan 11
+ switchport mode access
+ spanning-tree portfast
+!
+interface GigabitEthernet2/0/21
+ switchport access vlan 12
+ switchport mode access
+ spanning-tree portfast
+!
+interface GigabitEthernet2/0/22
+ switchport access vlan 12
+ switchport mode access
+ spanning-tree portfast
+!
+interface GigabitEthernet2/0/23
+ switchport mode access
+ spanning-tree portfast
+!
+interface GigabitEthernet2/0/24
+ description uplink to MX
+ switchport mode trunk
+!
+interface GigabitEthernet2/1/1
+!
+interface GigabitEthernet2/1/2
+!
+interface GigabitEthernet2/1/3
+!
+interface GigabitEthernet2/1/4
+!
+interface TenGigabitEthernet2/1/1
+!
+interface TenGigabitEthernet2/1/2
+!
+interface TenGigabitEthernet2/1/3
+!
+interface TenGigabitEthernet2/1/4
+!
+interface Vlan1
+ no ip address
+ shutdown
+!
+ip forward-protocol nd
+ip http server
+ip http authentication local
+ip http secure-server
+!
+!
+!
+!
+!
+!
+control-plane
+ service-policy input system-cpp-policy
+!
+!
+line con 0
+ stopbits 1
+line aux 0
+ stopbits 1
+line vty 0 4
+ login
+line vty 5 15
+ login
+!
+!
+mac address-table notification mac-move
+wsma agent exec
+!
+wsma agent config
+!
+wsma agent filesys
+!
+wsma agent notify
+!
+!
+end
+
+
