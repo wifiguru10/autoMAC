@@ -323,23 +323,7 @@ def main():
         # new network device function, works at network level instead of querying each switch
         for n in networks_inscope:
             netid = n['id']
-            #clients = dashboard.clients.getNetworkClients(netid, perPage=1000)
-            clients = dashboard.networks.getNetworkClients(netid, perPage=1000)
-            lastId = ""
-            if len(clients) == 1000:
-                lastId = clients[999]['id']
-                clients = clients + dashboard.networks.getNetworkClients(netid, perPage=1000, startingAfter=lastId)
-            lastId = clients[len(clients)-1]['id']
-            newclients = dashboard.networks.getNetworkClients(netid, perPage=1000, startingAfter=lastId)
-            while len(newclients) >= 1:
-                #print(f'Clients {len(clients)}')
-                #print(f'NewClients {len(newclients)}')
-                #print(lastId)
-                clients = clients + newclients
-                lastId = newclients[len(newclients)-1]['id']
-                newclients = dashboard.networks.getNetworkClients(netid, perPage=1000, startingAfter=lastId)
-                if len(newclients) <= 1:
-                    break
+            clients = dashboard.networks.getNetworkClients(netid, perPage=1000, total_pages='all')
             
  
             print(f'{bcolors.OKBLUE}Detected total {bcolors.WARNING}{len(clients)}{bcolors.OKBLUE} in Network[{bcolors.WARNING}{n["name"]}{bcolors.OKBLUE}]')
@@ -354,6 +338,7 @@ def main():
                 serial = c['recentDeviceSerial']
                 mac = c['mac']
                 vlan = int(c['vlan'])
+                if c['switchport'] == 'AGGR/0': continue
                 port = int(c['switchport']) #yes this is right, coming from API call
 
                 # check to see if the MAC is in the source clientDB, if so, return the object
@@ -508,8 +493,8 @@ def main():
         print(f'{bcolors.HEADER}**************************** END LOOP *****************************')
         print()
 
-
-        time.sleep(15)
+        print(f'{bcolors.OKGREEN}Sleep mode.....')
+        time.sleep(30)
         print()
         print()
         # while loop
