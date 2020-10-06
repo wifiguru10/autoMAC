@@ -30,4 +30,5 @@ Meraki autoMAC - allows you to automatically configure the switch ports on a MS 
 -test it first
 -Try not to do CDP only profiles, there's some issues where devices that don't do CDP/LLDP might show CDP info of another device in the stack
 
-
+# DEMO DEMO DEMO
+* Check it out here -> https://youtu.be/HCRGmuMJFd0
